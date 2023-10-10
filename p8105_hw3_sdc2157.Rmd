@@ -5,19 +5,43 @@ date: 2023-10-14
 output: github_document
 ---
 
-I'm an R Markdown document! 
+```{r, data import, results = FALSE, message = FALSE}
+library(tidyverse)
+library(p8105.datasets)
+
+data("instacart")
+
+data("brfss_smart2010")
+
+demographic_raw <- read_csv("data/nhanes_covar.csv", skip = 4, col_names = TRUE)
+head(demographic_raw)
+tail(demographic_raw)
+colnames(demographic_raw)
+
+accel_raw <- read_csv("data/nhanes_accel.csv", col_names = TRUE)
+head(accel_raw)
+tail(accel_raw)
+colnames(accel_raw)
+```
+
+```{r, setup, echo = FALSE, results = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
 
 # Section 1
 
-Here's a **code chunk** that samples from 
-a _normal distribution_:
-
-```{r}
-samp = rnorm(100)
-length(samp)
-```
-
-# Section 2
-
-I can take the mean of the sample, too!
-The mean is `r mean(samp)`.
