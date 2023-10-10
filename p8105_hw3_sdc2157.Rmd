@@ -43,5 +43,41 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-# Section 1
+# Problem 1
 
+```{r}
+instacart_clean <- instacart |> 
+  janitor::clean_names()
+
+head(instacart_clean)
+
+str(instacart_clean)
+
+sum(is.na(instacart_clean))
+
+num_users <- instacart_clean |> 
+  distinct(user_id)
+
+```
+
+
+The data set describes
+
+The data set contains `r nrow(instacart_clean)` observations and `r ncol(instacart_clean)`. Each observation corresponds to a distinct instacart product. Variables include `r colnames(instacart_clean)`.
+
+```{r}
+num_aisle <- instacart_clean |> 
+  count(aisle_id) |> 
+  nrow()
+
+aisle_items <- instacart_clean |> 
+  select(aisle, product_name) |> 
+  group_by(aisle) |> 
+  summarize(
+    n_items = n()
+  ) |> 
+  arrange(desc(n_items))
+
+```
+
+fresh veggies, fresh fruits, and packaged vegtables/fruits
