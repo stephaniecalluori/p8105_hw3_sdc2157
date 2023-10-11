@@ -136,3 +136,26 @@ sub <- instacart_clean |>
 
 ```
 
+
+# Problem 2
+Excellent, Fair, Good, Poor, Very good, DK/NS, Refused
+```{r}
+brfss_clean <- brfss_smart2010 |> 
+  janitor::clean_names() |> 
+  rename(location = locationabbr, county = locationdesc) |> 
+  filter(topic == "Overall Health", 
+         response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) |> 
+  mutate(response = fct_relevel(response, 
+                                c("Poor", "Fair", "Good", "Very good", "Excellent")))
+
+
+
+
+
+```
+
+
+
+
+
+
