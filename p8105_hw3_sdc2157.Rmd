@@ -138,21 +138,50 @@ sub <- instacart_clean |>
 
 
 # Problem 2
-Excellent, Fair, Good, Poor, Very good, DK/NS, Refused
+50 states and Washington DC
 ```{r}
 brfss_clean <- brfss_smart2010 |> 
   janitor::clean_names() |> 
-  rename(location = locationabbr, county = locationdesc) |> 
+  rename(state = locationabbr, county = locationdesc) |> 
   filter(topic == "Overall Health", 
          response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) |> 
   mutate(response = fct_relevel(response, 
                                 c("Poor", "Fair", "Good", "Very good", "Excellent")))
 
-
-
-
+unique(brfss_clean$state)
 
 ```
+
+In 2002, which states were observed at 7 or more locations? 
+
+```{r}
+brfss_clean |> 
+  select(year, state, county) |> 
+  filter(year == "2002") |> 
+  group_by(state) |>
+  distinct(county) |> 
+  summarize(num_county = n()) |> 
+  filter(num_county >= 7) |> 
+  arrange(desc(num_county)) |> 
+  knitr::kable(digits = 2)
+
+```
+
+In 2010, which states were observed at 7 or more locations?
+
+```{r}
+brfss_clean |> 
+  select(year, state, county) |> 
+  filter(year == "2010") |> 
+  group_by(state) |>
+  distinct(county) |> 
+  summarize(num_county = n()) |> 
+  filter(num_county >= 7) |> 
+  arrange(desc(num_county)) |> 
+  knitr::kable(digits = 2)
+
+```
+
 
 
 
