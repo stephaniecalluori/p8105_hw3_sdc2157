@@ -248,6 +248,36 @@ head(combined_accel)
 
 
 
+Produce a reader-friendly table for the number of men and women in each education category
+
+```{r}
+combined_accel |> 
+  group_by(education, sex) |> 
+  summarize(n_obs = n()) |> 
+  pivot_wider(
+    names_from = sex,
+    values_from = n_obs,
+  ) |> 
+  knitr::kable(digits = 2)
+
+```
+
+create a visualization of the age distributions for men and women in each education category.
+
+```{r}
+combined_accel |> 
+  ggplot(aes(x = age, y = sex)) +
+  geom_density_ridges() +
+  facet_grid(. ~ education)
+
+combined_accel |> 
+  ggplot(aes(x = age, y = sex)) +
+  geom_density_ridges() +
+  facet_grid(education ~ .)
+
+
+```
+
 
 
 
