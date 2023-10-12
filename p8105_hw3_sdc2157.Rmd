@@ -187,6 +187,8 @@ brfss_clean |>
 
 Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
 
+###Office Hrs ASK ABOUT: strategies to make more readable, check on group aesthetic?
+
 ```{r}
 brfss_clean |> 
   select(year, state, county, response, data_value) |>
@@ -210,6 +212,42 @@ brfss_clean |>
   geom_density_ridges() +
   facet_grid(.~year)
 ```
+
+#Problem 3
+demogrpahic raw
+accel raw
+
+Load, tidy, merge, and otherwise organize the data sets. Your final dataset should include all originally observed variables; exclude participants less than 21 years of age, and those with missing demographic data; and encode data with reasonable variable classes (i.e. not numeric, and using factors with the ordering of tables and plots in mind).
+
+```{r}
+demographic_clean <- demographic_raw |> 
+  janitor::clean_names() |> 
+  mutate(sex = as.factor(sex),
+         education = as.factor(education)
+         ) |>
+  mutate(sex = recode(sex, 
+                      "1" = "male", 
+                      "2" = "female"),
+         education = recode(education, 
+             "1" = "Less than high school",
+             "2" = "High school equivalent",
+             "3" = "More than high school")) |> 
+  drop_na() |> 
+  filter(age >= 21)
+
+nrow(demographic_clean)
+
+accel_clean <- accel_raw |> 
+  janitor::clean_names()
+
+combined_accel <- left_join(demographic_clean, accel_clean, by = "seqn")
+nrow(combined_accel)
+head(combined_accel)
+  
+```
+
+
+
 
 
 
