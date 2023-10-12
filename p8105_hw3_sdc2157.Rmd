@@ -275,6 +275,20 @@ combined_accel |>
   geom_density_ridges() +
   facet_grid(education ~ .)
 
+```
+
+Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. 
+
+```{r}
+tail(colnames(combined_accel))
+
+combined_accel |>
+  mutate(total_activity = rowSums(across(min1:min1440))) |> 
+  ggplot(aes(x = age, y = total_activity, color = sex)) +
+  geom_point() +
+  geom_smooth(se=FALSE) +
+  facet_grid(education ~ .)
+
 
 ```
 
