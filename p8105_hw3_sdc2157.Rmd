@@ -214,9 +214,6 @@ brfss_clean |>
 ```
 
 #Problem 3
-demogrpahic raw
-accel raw
-
 Load, tidy, merge, and otherwise organize the data sets. Your final dataset should include all originally observed variables; exclude participants less than 21 years of age, and those with missing demographic data; and encode data with reasonable variable classes (i.e. not numeric, and using factors with the ordering of tables and plots in mind).
 
 ```{r}
@@ -277,6 +274,14 @@ combined_accel |>
 
 ```
 
+```{r}
+combined_accel |> 
+  ggplot(aes(x = sex, y = age)) +
+  geom_boxplot() +
+  facet_grid(education ~ .)
+
+```
+
 Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. 
 
 ```{r}
@@ -291,8 +296,28 @@ combined_accel |>
 
 
 ```
+Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences.
+
+when you group by seqn it calculate averages mims for each minute
+need to convert minute to numeric so you get continous x axis
+```{r}
+colnames(combined_accel)
+str(combined_accel)
+combined_accel |> 
+  pivot_longer(
+    min1:min1440,
+    names_to = "minute",
+    names_prefix = "min",
+    values_to = "mims"
+  ) |> 
+  mutate(minute = as.numeric(minute)) |> 
+  ggplot(aes(x = minute, y = mims, group = seqn, color = sex)) +
+  geom_line() +
+  geom_smooth(aes(group = sex)) +
+  facet_grid(. ~ education)
+
+```
 
 
-
-
+try using boxplots!!!!
 
