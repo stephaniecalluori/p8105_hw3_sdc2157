@@ -5,12 +5,16 @@ date: 2023-10-14
 output: github_document
 ---
 
-```{r, data import, results = FALSE, message = FALSE}
+```{r, load packages}
 library(tidyverse)
 library(p8105.datasets)
 library(patchwork)
 library(ggridges)
 
+```
+
+
+```{r, data import, results = FALSE, message = FALSE}
 data("instacart")
 
 data("brfss_smart2010")
@@ -44,7 +48,6 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-
 # Problem 1
 
 ```{r}
@@ -55,17 +58,21 @@ head(instacart_clean)
 
 str(instacart_clean)
 
-sum(is.na(instacart_clean))
+na_num <- sum(is.na(instacart_clean))
 
-num_users <- instacart_clean |> 
-  distinct(user_id)
+popular_items <- instacart_clean |> 
+  group_by(product_name) |> 
+  summarize(product_n = n()) |> 
+  arrange(desc(product_n))
 
 ```
 
+The instacart data set contains `r nrow(instacart_clean)` observations and `r ncol(instacart_clean)` variables. Each observation corresponds to a product from an order. There are `r instacart_clean |> distinct(order_id) |> nrow()` orders from `r instacart_clean |> distinct(user_id) |> nrow()` users (i.e., one order per user). 
 
-The data set describes
+Variables include `r colnames(instacart_clean)`. All variables are integers except for 4 character variables. NA values are not present in the data set. 
 
-The data set contains `r nrow(instacart_clean)` observations and `r ncol(instacart_clean)`. Each observation corresponds to a distinct instacart product. Variables include `r colnames(instacart_clean)`.
+Across the orders, a total of `r instacart_clean |> distinct(product_id) |> nrow()` distinct products were purchased. The most purchased item was `r popular_items[1,1]`. 
+
 
 ```{r}
 num_aisle <- instacart_clean |> 
@@ -278,8 +285,7 @@ combined_accel |>
 combined_accel |> 
   ggplot(aes(x = sex, y = age)) +
   geom_boxplot() +
-  facet_grid(education ~ .)
-
+  facet_grid(. ~ education)
 ```
 
 Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. 
