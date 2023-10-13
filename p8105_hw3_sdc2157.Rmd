@@ -28,6 +28,7 @@ accel_raw <- read_csv("data/nhanes_accel.csv", col_names = TRUE)
 head(accel_raw)
 tail(accel_raw)
 colnames(accel_raw)
+
 ```
 
 ```{r, setup, echo = FALSE, results = FALSE, message = FALSE}
@@ -46,17 +47,14 @@ options(
 
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+
 ```
 
 # Problem 1
 
-```{r}
+```{r, clean and summarize instacart}
 instacart_clean <- instacart |> 
   janitor::clean_names()
-
-head(instacart_clean)
-
-str(instacart_clean)
 
 na_num <- sum(is.na(instacart_clean))
 
@@ -73,23 +71,20 @@ Variables include `r colnames(instacart_clean)`. All variables are integers exce
 
 Across the orders, a total of `r instacart_clean |> distinct(product_id) |> nrow()` distinct products were purchased. The most purchased item was `r popular_items[1,1]`. 
 
-
-```{r}
+```{r, aisle summaries}
 num_aisle <- instacart_clean |> 
   count(aisle_id) |> 
   nrow()
 
 aisle_items <- instacart_clean |> 
-  select(aisle, product_name) |> 
   group_by(aisle) |> 
-  summarize(
-    n_items = n()
-  ) |> 
+  summarize(n_items = n()) |> 
   arrange(desc(n_items))
 
 ```
 
-fresh veggies, fresh fruits, and packaged vegtables/fruits
+Customers ordered from `r num_aisle` different aisles. The top 3 aisles from which the most items are ordered are `r aisle_items[1,1]`, `r aisle_items[2,1]`, and `r aisle_items[3,1]`.
+
 
 ```{r}
 plot <- aisle_items |> 
