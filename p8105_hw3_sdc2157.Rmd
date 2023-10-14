@@ -10,7 +10,6 @@ output: github_document
 ```{r, load packages, message = FALSE}
 library(tidyverse)
 library(p8105.datasets)
-library(ggridges)
 
 ```
 
@@ -240,11 +239,9 @@ brfss_clean |>
 The figure above compares the distributions of data values for responses "Poor" to "Excellent" among counties in NY state during 2006 to those reported in 2010. The responses are in relation to the Overall Health topic. Notably, the median data value for "Very good" responses was greater in 2010 than 2006.
 
 
-#Problem 3
+# Problem 3
 
-Load, tidy, merge, and otherwise organize the data sets. Your final dataset should include all originally observed variables; exclude participants less than 21 years of age, and those with missing demographic data; and encode data with reasonable variable classes (i.e. not numeric, and using factors with the ordering of tables and plots in mind).
-
-```{r}
+```{r, cleaned mims data sets}
 demographic_clean <- demographic_raw |> 
   janitor::clean_names() |> 
   mutate(sex = as.factor(sex),
@@ -260,22 +257,18 @@ demographic_clean <- demographic_raw |>
   drop_na() |> 
   filter(age >= 21)
 
-nrow(demographic_clean)
-
 accel_clean <- accel_raw |> 
   janitor::clean_names()
 
 combined_accel <- left_join(demographic_clean, accel_clean, by = "seqn")
-nrow(combined_accel)
-head(combined_accel)
   
 ```
 
+Our combined data set contains `r nrow(combined_accel)` observations and `r ncol(combined_accel)` variables. The data set describes the demographics and the MIMS activity per minute over a 24 hr time period for each of the `r nrow(combined_accel)` participants.
 
+The table below shows the number of males and females in each of the educational categories. Most males and females received more than a high school education.
 
-Produce a reader-friendly table for the number of men and women in each education category
-
-```{r}
+```{r, education and sex table}
 combined_accel |> 
   group_by(education, sex) |> 
   summarize(n_obs = n()) |> 
@@ -287,49 +280,43 @@ combined_accel |>
 
 ```
 
-create a visualization of the age distributions for men and women in each education category.
 
-```{r}
-combined_accel |> 
-  ggplot(aes(x = age, y = sex)) +
-  geom_density_ridges() +
-  facet_grid(. ~ education)
-
-combined_accel |> 
-  ggplot(aes(x = age, y = sex)) +
-  geom_density_ridges() +
-  facet_grid(education ~ .)
-
-```
-
-```{r}
+```{r, education sex age plot}
 combined_accel |> 
   ggplot(aes(x = sex, y = age)) +
   geom_boxplot() +
+  scale_y_continuous(
+    breaks = c(10, 20, 30, 40, 50, 60, 70, 80, 90),
+    limits = c(0, 90)
+  ) +
+  labs(title = "Age distribution of males and females by education received",
+       y = "Age (years)",
+       x = "Sex") +
   facet_grid(. ~ education)
+
 ```
 
-Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. 
+The figure above shows the age distribuion of males and females by education received. Among those who received less than a high school education, the median age of males and females was similar. Among those who received the equivalent of a high school education, the median age of females was greater than males. Among those who received more than a high school education, the median age of females was slightly less than that of males. 
 
-```{r}
-tail(colnames(combined_accel))
-
+```{r, total activity plot}
 combined_accel |>
   mutate(total_activity = rowSums(across(min1:min1440))) |> 
   ggplot(aes(x = age, y = total_activity, color = sex)) +
   geom_point() +
-  geom_smooth(se=FALSE) +
-  facet_grid(education ~ .)
-
+  geom_smooth(se = FALSE) +
+  labs(
+    title = "Total MIMS activity across age for males and females",
+    x = "Age (years)",
+    y = "Total Activity (MIMS)",
+    color = "Sex") +
+  facet_grid(education ~ .) +
+  theme(legend.position = "bottom")
 
 ```
-Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences.
 
-when you group by seqn it calculate averages mims for each minute
-need to convert minute to numeric so you get continous x axis
-```{r}
-colnames(combined_accel)
-str(combined_accel)
+The figure above shows total MIMS activity across age for males and females. Among those who received the equivalent of a high school education and those who received more than a high school education, females generally had higher total activity than males across ages 21-80 years. In contrast, among those who received less than a high school education, females tended to have higher total activity until age 40; after age 40, males had a higher total activity level than females.
+
+```{r, mims over time plot}
 combined_accel |> 
   pivot_longer(
     min1:min1440,
@@ -341,10 +328,16 @@ combined_accel |>
   ggplot(aes(x = minute, y = mims, group = seqn, color = sex)) +
   geom_line() +
   geom_smooth(aes(group = sex)) +
-  facet_grid(. ~ education)
+  labs(
+    title = "MIMS over a 24 hr period for males and females",
+    x = "Minute",
+    y = "MIMS",
+    color = "Sex") +
+  facet_grid(. ~ education) +
+  theme(legend.position = "bottom")
+
 
 ```
 
-
-try using boxplots!!!!
+The figure above shows the MIMS for males and females over a 24 hr period by education received. The 24 hr time period started at midnight. Generally, most people are active during the day. The MIMS activity for males and females who received more than a high school education displays a dramatic uptick at minute 500 and minute 8000.
 
