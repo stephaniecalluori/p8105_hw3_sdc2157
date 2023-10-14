@@ -98,7 +98,7 @@ aisle_items |>
 
 Following the top 3 aisles, yogurt, packaged cheese, and walter seltzer sparkling water were the most popular aisles.
 
-```{r, aisle table}
+```{r, aisle table, message = FALSE}
 instacart_clean |> 
   filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) |> 
   group_by(aisle, product_name) |> 
@@ -115,7 +115,7 @@ The top item ordered in the packaged vegetables fruits aisle was organic baby sp
 The table below shows the mean hour of the day at which Coffee Ice Cream and Pink Lady Apples were ordered on each day of the week. Overall, these items were typically ordered between late morning and mid-afternoon, regardless of the day of the week.
 
 
-```{r, order time table}
+```{r, order time table, message = FALSE}
 instacart_clean |>
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) |> 
   mutate(
