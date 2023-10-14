@@ -30,7 +30,7 @@ accel_raw <- read_csv("data/nhanes_accel.csv", col_names = TRUE)
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
-  out.width = "80%"
+  out.width = "90%"
 )
 
 theme_set(theme_minimal() + theme(legend.position = "right"))
