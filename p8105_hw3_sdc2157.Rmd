@@ -28,7 +28,7 @@ accel_raw <- read_csv("data/nhanes_accel.csv", col_names = TRUE)
 
 ```{r, setup, echo = FALSE, results = FALSE, message = FALSE}
 knitr::opts_chunk$set(
-  fig.width = 6,
+  fig.width = 5,
   fig.asp = .6,
   out.width = "90%"
 )
