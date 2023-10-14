@@ -197,7 +197,7 @@ brfss_clean |>
 
 ```
 
-```{r, excellent responses plot}
+```{r, excellent responses plot, message = FALSE}
 brfss_clean |> 
   select(year, state, county, response, data_value) |>
   drop_na() |> 
@@ -207,7 +207,7 @@ brfss_clean |>
   ggplot(aes(x = year, y = avg_data_value, group = state, color = state)) +
   geom_line() +
   labs(
-    title = "Average value of excellent responses",
+    title = "Avg value of excellent responses",
     caption = "*Responses relate to the Overall Health topic")
   
 ```
@@ -223,7 +223,8 @@ brfss_clean |>
   facet_grid(. ~ year) +
   labs(
     title = "Distributions of data values for responses in NY in 2006 & 2010",
-    caption = "*Responses relate to the Overall Health topic")
+    caption = "*Responses relate to the Overall Health topic") +
+  theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
 
 ```
 
@@ -259,7 +260,7 @@ Our combined data set contains `r nrow(combined_accel)` observations and `r ncol
 
 The table below shows the number of males and females in each of the educational categories. Most males and females received more than a high school education.
 
-```{r, education table}
+```{r, education table, message = FALSE}
 combined_accel |> 
   group_by(education, sex) |> 
   summarize(n_obs = n()) |> 
@@ -289,7 +290,7 @@ combined_accel |>
 
 The figure above shows the age distribuion of males and females by education received. Among those who received less than a high school education, the median age of males and females was similar. Among those who received the equivalent of a high school education, the median age of females was greater than males. Among those who received more than a high school education, the median age of females was slightly less than that of males. 
 
-```{r, total activity plot}
+```{r, total activity plot, message = FALSE}
 combined_accel |>
   mutate(total_activity = rowSums(across(min1:min1440))) |> 
   ggplot(aes(x = age, y = total_activity, color = sex)) +
@@ -301,13 +302,14 @@ combined_accel |>
     y = "Total Activity (MIMS)",
     color = "Sex") +
   facet_grid(education ~ .) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  theme(strip.text.y = element_text(angle = 0))
 
 ```
 
 The figure above shows total MIMS activity across age for males and females. Among those who received the equivalent of a high school education and those who received more than a high school education, females generally had a higher total activity level than males across ages 21-80 years. In contrast, among those who received less than a high school education, females tended to have a higher total activity level until age 40; after age 40, males had a higher total activity level than females.
 
-```{r, mims over time plot}
+```{r, mims over time plot, message = FALSE}
 combined_accel |> 
   pivot_longer(
     min1:min1440,
