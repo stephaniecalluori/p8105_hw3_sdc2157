@@ -220,11 +220,11 @@ brfss_clean |>
   filter(year %in% c(2006, 2010), state == "NY") |> 
   ggplot(aes(x = response, y = data_value)) +
   geom_boxplot() +
-  facet_grid(. ~ year) +
   labs(
     title = "Distributions of data values for responses in NY in 2006 & 2010",
     caption = "*Responses relate to the Overall Health topic") +
-  theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+  theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1)) +
+  facet_grid(. ~ year)
 
 ```
 
@@ -301,9 +301,9 @@ combined_accel |>
     x = "Age (years)",
     y = "Total Activity (MIMS)",
     color = "Sex") +
-  facet_grid(education ~ .) +
   theme(legend.position = "bottom") +
-  theme(strip.text.y = element_text(angle = 0))
+  theme(strip.text.y = element_text(angle = 0)) +
+  facet_grid(education ~ .) 
 
 ```
 
