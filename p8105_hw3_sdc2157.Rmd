@@ -322,7 +322,7 @@ combined_accel |>
   geom_line() +
   geom_smooth(aes(group = sex)) +
   labs(
-    title = "MIMS over a 24 hr period for males and females by education",
+    title = "MIMS over 24 hr period for males and females by education",
     x = "Minute",
     y = "MIMS",
     color = "Sex") +
